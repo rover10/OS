@@ -1,0 +1,29 @@
+Compilation:
+----------------------------------------
+File: p0.c
+gcc p0.c
+---------------------------------------
+
+File: ch1.c
+gcc -o ch1 -std=c99 ch1.c
+
+File: ch2.c
+gcc -o ch2 -std=c99 ch2.c
+
+File: ch1.c
+gcc -o ch3 -std=c99 ch3.c
+
+-------------------------------------
+
+Aim:   Execution of 3 process parallely which are stored in 3 dirrent files which are independent program 	 running in c
+
+
+Run ./a.out
+Expected output:
+Mixture of outputs of files ch1,ch2,ch2 run separately.
+
+eg. 111113333322222
+-The count of 1's,2's &3's must be same.
+
+Drawback: 8=pow(2,3) process are created at all..but only three of them are choosen for executing the files. 
+          This fact can be verified by just writing a print statement with any message such as 'hello' just after the third fork() call.

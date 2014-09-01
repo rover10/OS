@@ -1,0 +1,258 @@
+PICK THE BEST ANSWER
+
+1. Consider a demand paging system with the following metrics
+ utilizations.
+ cpu utilization 20 %
+ paging disk 97.7 %
+ other i/o devices 5 %
+
+ Which of the following if any will probably improve the cpu utilization
+ a. Install a faster cpu.
+ b. Install a bigger paging disk
+ c. Increase the degree of multiprogramming
+ d. Install more main memory
+ e. Decrease the time quantum allocated to each process
+
+ANS: (d) The system is obviously thrashing.  You do not want to
+increase the number of processes competing for page frames.  Installing
+a faster CPU will not help; CPU is underutilized as is.  There is no
+indication that the size of the current paging disk is inadequate. 
+(A faster paging disk 
+might be  helpful.)
+
+2. What is a probable cause of system thrashing ?
+a) I/O drivers that are not properly connected to the I/O subsystem.
+b) Repeated parity errors  
+c) Disk crashes
+d) A local page replacement algorithm
+e) Process(es) being unable to establish their working set of pages
+f) A FIFO page replacement algorithm
+
+ANS: e) Processes being unable to establish their working set of pages.
+A local page replacement algorithm may increase the probability of
+one process thrashing, but cannot be considered the cause of system 
+thrashing.
+If a FIFO page replacement algorithm is ineffective, it will increase the
+probability of page thrashing, but (e) is the best answer. 
+
+3.Assume  a UNIX file system allows a user to delete its file and then 
+reclaims the file's disk space although hard links (dangling references) to 
+that file still exist. Thus users can read and write files to which the 
+reclaimed storage area is later allocated.
+This problem can be effectively dealt with by 
+a) Implementing the sharing by symbolic (soft) links.
+b) Running a disk defragmentation program.
+c) Using a hash function
+
+ANS: a) Soft links assures that a process does not reference a reclaimed
+storage area. Of course, UNIX allows users to have hard and soft links.
+Hard links are implemented with references counts to assure that
+dangling references do not occur.
+
+4. Using the following memory mgt schemes, which type of fragmentation is
+most likely:
+a) external fragmentation using paging
+b) internal fragmentation using segmentation
+c) external fragmentation using large fixed size partitions
+d) internal fragmentation using paging
+e) internal fragmentation using variable size partitions       
+
+ANS: d
+
+External fragmentation cannot occur with paging (assuming all pages are the
+same size). External fragmentation is not probable using large fixed size 
+partitions, since it is likely that each partition can be used for a 
+requesting process, although there will be a lot of unused internal space 
+(internal fragmentation).
+Internal fragmentation should not occur using variable size partitions or using
+segmentation of memory, since allocated storage has been specified by user.
+If a system uses paging, typically half of the last page allocated to 
+each process will be unused.  This is internal fragmentation.
+
+5. Caches may degrade performance if 
+a) They hold a significant portion of references made to memory
+b) A large amount of thread context switching occurs    
+c) Page thrashing occurs globally
+d) Cache access is significantly faster than access to memory
+e) The principle of locality of reference applies
+
+ANS: c: if page thrashing occurs globally, i.e., among all user processes,
+then there will be a lot of context switching and caches will repeatedly
+have to be flushed and rewritten
+(a) (d) and (e) are the reasons why caches improve performance
+(b) threads share data areas, so context switching between them need not
+change values in cache to a significant degree
+
+6. Assume that we are using MVT (variable size partitions) 
+and we have batch processes arriving in order, 
+with the following requests for storage:
+    20k, 30k, 10k, 100k, 60k
+Assume that we have five holes in memory of size: 50k, 30k, 200k, 16k, 30k
+
+Where would each of the First-fit, Best-fit, and Next-fit algorithms place
+the processes?
+
+ MVT uses the remainder of the hole that is left during allocation.
+Using first fit,
+20 and 30 go into the 50k partition, 10k into the next 30k, 100 into 200k
+and 60 into the 100k hole that is left.
+Best fit:  20k goes into one of the 30k holes; 30k goes into the other 30k hole.
+10k goes into the 10k hole left by the placement of the 20k process; 
+100k goes into the 200k hole leaving 100k for the 60k process.
+Next fit:  20k goes into the 50k hole and 30k uses the hole left from that
+match. 10k goes into the 30k hole; 100k goes into the 200k hole (leaving 100k)
+ and 60k goes into that 100k hole 
+
+6a/ Try this one yourself:
+6. Assume that we are using MVT (variable size partitions)
+and we have 5 batch processes arriving in order,
+with the following requests for storage:
+    30k, 25k, 10k, 100k, 60k
+Assume that we have four holes in memory of size: 50k, 40k, 200k, 16k, 30k
+
+Where would each of the First-fit, Best-fit and Next-fit algorithms place
+the processes?
+
+
+7. Consider a paging system with a page table stored in memory.
+a.If a memory reference takes 200 nanoseconds, how long does a paged
+reference take(reference is retrieved from page table in memory and then 
+program data is retrieved from memory) Assume all pages are in memory.
+b. If we add associative registers (TLB), and 75 percent of all page-table
+references are found in the associative registers, what is the effective
+memory reference time on average?(Assume that finding a page table entry in the
+associative registers takes 10 nanoseconds, if the entry is there.)
+Assume all pages are in memory.
+
+c) What is the effective memory reference time in a virtual memory system
+if 70% of the references are found in the associative registers, 
+ 20% of the references are resolved in the page table, and 10% of the time we 
+must go out to the paging disk to load the faulted page into memory,
+where context switching, disk transfer time, etc takes 100 m seconds.).
+
+ANSWERS
+a) 200nsec + 200nsec = 400 nsec
+b).75 (10nsec + 200nsec) + .25 (10nsec + 200nsec +   200nsec) = about 250 nsec 
+                                 TLB     page table   page
+  {I would accept it if you left out the second 10ns for the TLB search}
+
+c) Add .7 (10nsec + 200 nsec) + .2 (10 nsec + 200 nsec + 200 nsec) 
++.1( 10nsec+ 200nsec + 100mseconds  +10nsec  + 200nsec + 200 nsec)= about 10ms  
+      TLB    memory      disk         TLB     memory
+    (assuming the TLB is searched before the page table) 
+Do not forget that you are working with milliseconds.             
+       
+
+8) To what physical address will the following logical address be
+mapped?                 
+     virtual address:  00011        0011
+                       page#        offset
+page map table
+valid bit     memory address
+v   		001110
+v   		011100
+v   		011111
+v   		100000
+What is the size of the pages assuming the machine is byte addressable?
+
+DISCUSSION:
+mapped to 4th entry (page #3 [00011] is 4th entry) -> 100000 0011
+Size of pages:  2^4 power or 16 words because the offset is 4 bits
+
+
+Problem on
+9) page replacement FIFO, LRU, optimal
+
+For reference string 20203456432200 and three frames, how many page
+faults will each of the above algorithms cause.  Show replacement.
+
+10) GANTT CHARTS - FCFS, SPN, RR, SRT and priority scheduling
+expect different arrival times
+
+
+
+Fill-in questions
+1) RAID disks are designed to further goals of  ___________ and/ or ____________
+
+possible ans:  Efficiency , reliability
+
+2) Two disadvantages of linked noncontiguous file storage _______ and _____
+possible answers: 
+ Multiple disk accesses for data that do not reside in the first 
+            block/cluster
+ Reliability issue: even with a doubly linked chain of blocks, if one
+           link is lost, there are issues in reconstructing the file
+ The cost of  storage and traversal of links between blocks
+
+
+4. A file open operation is used to
+a) return a pointer to the file table, so that subsequent access to the file
+can retrieve all relevant information, without repeated searches
+b) create a file table
+c) allocate storage for the file on the disk
+d) store the file in the proper directory
+e) create an index of blocks allocated to the file
+
+ANS: a)
+
+
+5. A UNIX or NT socket creation is used to
+a) return a pointer to the socket table, so that subsequent access to the
+socket can retrieve all relevant information (binding is necessary for
+socket use)
+b) create a socket table
+c) create a file table
+d) store a file in the proper directory
+
+ANS: (a)
+
+
+7. A UNIX i-node has 13 direct pointers, 1 indirect pointer, 1 double indirect
+pointer and 1 triple indirect pointer.  Assume that each 32 bit pointer
+identifies one block of 8KB.  How large a file can the i-node handle?
+
+ans:  13 (1 block) + 1 (2k pointers) (1 block) + 1 (2k)(2k) (1 block) +
+                          (2k)(2k)(2k) (1 block) =
+    13 (8kB) + 2k (8kB) + 4M (8kB) + 8G (8kB) =
+      104KB + 16MB + 32GB + 64 TB = 64032016024000Bytes
+              
+The answer is actually greater than that since kB = 1024 Bytes,
+but I have written it this way to indicate the size of the file that each
+portion can handle.
+
+8) Give three steps in the handshake between controller and host.
+Possible answer:
+a) Controller sets busy bit 
+b) host sets command bit
+c) data in or data out registers filled depending upon command
+d) status bit set by controller after i/o completion
+e) controller clears busy bit, command bit after i/o completion
+
+9) A robotic jukebox is a
+a) controller
+b) fast storage device
+c) very large storage device
+d) storage device for virtual memory
+
+ans: (c)
+
+10) Firewire is similar to USB in that it
+a) is defined for a serial connector
+b) is defined for a parallel connector
+c) is defined for slow devices
+d) is limited to Apple systems
+
+ans: (a)
+
+11) Interrupt Handling for devices required extra hardware of ___________
+
+sample answer: interrupt circuitry to recognize interrupt 
+circuitry  to save current PC and load PC value of ISR
+
+
+12) The Windows Registry stores
+a) configuration settings
+b) system performance information
+c) settings for application program
+d) all of the above
+

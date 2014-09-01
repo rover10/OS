@@ -1,0 +1,345 @@
+PICK THE BEST ANSWER
+
+1. Consider a demand paging system with the following time-measured
+ utilizations.
+ cpu utilization 20 %
+ paging disk 97.7 %
+ other i/o devices 5 %
+
+ Which of the following if any will probably improve the cpu utilization
+ a. Install a faster cpu.
+ b. Install a bigger paging disk
+ c. Increase the degree of multiprogramming
+ d. Install more main memory
+ e. Decrease the time quantum allocated to each process
+
+ANS: (d) The system is obviously thrashing.  You do not want to
+increase the number of processes competing for page frames.  Installing
+a faster CPU will not help; CPU is underutilized as is.  There is no
+indication that the current paging disk is inadequate. (A faster paging disk 
+might be  helpful.)
+
+2. What is the probable cause of thrashing ?
+a) I/O drivers that are not properly connected to the I/O subsystem.
+b) Repeated parity errors  
+c) Disk crashes
+d) A local page replacement algorithm
+e) Process(es) being unable to establish their working set of pages
+f) A FIFO page replacement algorithm
+
+ANS: e) Processes being unable to establish their working set of pages.
+A local page replacement algorithm may increase the probability of
+one process thrashing, but cannot be considered the cause of it.
+If a FIFO page replacement algorithm is ineffective, it will increase the
+probability of page thrashing, but (e) is the best answer. 
+
+3.Assume  a UNIX file system would  allow a user to delete a file and then 
+reclaims its disk space although hard links (dangling references) to that 
+file may still exist. Thus users could read and write different files that 
+are later allocated the reclaimed storage area.
+This problem can be effectively dealt with by 
+a) Implementing the sharing by symbolic (soft) links.
+b) Running a disk defragmentation program.
+c) Using a hash function
+
+
+ANS: a) Soft links assures that a process does not reference a reclaimed
+storage area. Of course, UNIX allows users to have hard and software links,
+so that hard links are implemented with references counts to assure that
+dangling references do not occur.
+
+4. Deadlock is not possible (for the given condition) if
+a) all processes output their data to a spooler
+b) all processes are required to prestate all required resources, and
+are preallocated all of those resource or none.
+c) all processes are required to lock their resources before access
+d) all processes are required to hold currently obtained resources while
+obtaining others, until they can complete service
+
+
+ANS (b) 
+Spoolers can and do deadlock (spooling solves the consistency problem of
+printers)  
+(c) (d)  actually enable deadlock
+
+5. Using the following memory mgt schemes, which type of fragmentation is
+most likely:
+a) external fragmentation using paging
+b) internal fragmentation using segmentation
+c) external fragmentation using large fixed size partitions
+d) internal fragmentation using paging
+e) internal fragmentation using variable size partitions       
+
+ANS: d
+External fragmentation cannot occur with paging (assuming all pages are the
+same size). External fragmentation is not probable using large fixed size 
+partitions, since it is likely that each partition can be used for a 
+requesting process, although there will be
+a lot of unused internal space (internal fragmentation).
+With variable size paritions and with segments, storage is allocated as
+requested so that too much internal fragmentation should not occur.
+If a system uses paging, typically half of the last page allocated to 
+each process will be unused.  This is internal fragmentation.
+
+6.Consider the following snapshot of a system:
+
+                Allocation    Max      Available
+                A B C D     A B C D    A B C D
+a)P0            0 0 1 2     0 0 1 3    1 5 2 0
+b)P1            1 0 0 1     1 5 1 1
+c)P2            1 3 0 4     2 3 5 6
+d)P3            0 6 3 2     0 6 7 2
+e)P4            0 0 1 4     0 6 5 6
+
+Is the system safe?
+ANSWER: P1 can complete, and release, allowing P0 to complete.
+But neither P2 or P3 or P4 can complete.  System is not safe.
+
+7. Caches may degrade performance if 
+a) They hold a significant proportion of references made to memory
+b) A large proportion of context switching of threads occurs    
+c) Page thrashing occurs globally
+d) Cache access is significantly faster than access to memory
+e) The principle of locality of reference applies
+
+ANS: c: if page thrashing occurs globally, i.e., among all processes,
+then there will be a lot of context switching and caches will repeatedly
+have to be flushed and rewritten
+(a) (d) and (e) are the reasons why caches improve performance
+(b) threads share memory areas, so context switching between them need not
+change values in cache to a significant degree
+
+
+8. Assume that we are using MVT (variable size partitions) 
+and we have batch processes arriving in order, 
+with the following requests for storage:
+    20k, 30k, 10k, 100k, 60k
+Assume that we have four holes in memory of size: 50k, 30k, 200k, 16k, 30k
+
+Where would each of the First-fit, Best-fit and Worst-fit algorithms place
+the processes?
+
+ MVT uses the remainder of the hole that is left during
+allocation, otherwise Worst-fit makes no sense whatsoever.  The concept of 
+Worst-fit is that allocation leaves a large enough hole for another process, 
+while best fit  leaves a small fragment.
+THUS, using worst-fit,
+20,30, 10 and 100 all go into the 200k partition (i.e., what is left each
+time) and there is no room for 60k.
+Using first fit,
+20 and 30 go into the 50k parition, 10k into the next 30k, 100 into 200k
+and 60 into the 100k hole that is left.
+
+9. Consider a paging system with a page table stored in memory.
+a.If a memory reference takes 200 nanoseconds, how long does a paged
+reference take(reference is retrieved from page table in memory and then 
+program data is retrieved from memory) Assume all pages are in memory?
+b. If we add associative registers (TLB), and 75 percent of all page-table
+references are found in the associative registers, what is the effective
+memory reference time on average?(Assume that finding a page table entry in the
+associative registers takes 10 nanoseconds, if the entry is there.)
+Assume all pages are in memory.
+
+c) What is the effective memory reference time if the hit ratio for the 
+associative registers is 70%, the hit ratio for memory is 20%, and 10% of 
+the time we must go out to the disk to load the faulted page in memory,
+where context switching, disk transfer time, etc takes 100 m seconds.).
+
+a) 200nsec + 200nsec = 400 nsec
+b).75 (10nsec + 200nsec) + .25 (10nsec + 200nsec +   200nsec) = about 250 nsec 
+                                 TLB     page table   page
+
+c) Add .7 (10nsec + 200 nsec) + .2 (10 nsec + 200 nsec + 200 nsec) 
++.1( 10nsec+ 200nsec + 100mseconds  +10nsec  + 200nsec + 200 nsec)  
+      TLB    memory      disk         TLB     memory
+    (according to text the TLB is searched before the page table)              
+     
+
+
+11) In the contest of Dijkstra's Banker's Algorithm, discuss
+whether the following state is safe or unsafe.  If
+safe, show how it is possible that all processes complete.
+                    current loan       maximum need
+                        A   B              A     B
+   User1                2   3              10    5
+   User2                3   3               8    5 
+   User3                2   2               4    4
+   User4                2   5               4    8
+Total Resources:  A:  10  B  15
+
+Available:             1     2
+
+User 1    stills need    (8 2)
+User 2                   (5 2)
+User 3                   (2 2)
+user 4                   (2 3)
+
+The banker would have never allowed these loans, since none of the
+processes are guaranteed to be able to complete.         
+
+
+12) What is spooling? How are these systems vulnerable to resource 
+deadlock? Suggest 3 methods to control deadlock.  Be sure to state 
+if these methods are prevention or detection with preemption and recovery.  
+Are these methods algorithms or heuristics?
+
+DISCUSSION: Spooling is an I/O program that uses a disk to compensate for
+the difference in speed between memory and a slow I/O device, such as a
+printer.  At the same time, it protects the I/O device, providing 
+uninterrupted access.  Because it is possible for the disk to fill up with
+partial output for several processes, none of which can complete without
+more disk space, spooling systems are vulnerable to deadlock.  
+Prevention: 
+1) make the spooling space preemptive, by allowing some of the
+user's output to be copied onto another disk (of course that disk can fill as
+well)
+2) allow one process's output to be written to the printer, and save the
+freed space for that process to continue to write output (not great since
+all the others must wait for the process to complete)
+3) do not accept more processes for spooling when spooling space gets
+filled 70% (this is a heuristic of banker's algorithm)
+
+Detection and recovery:
+When spooling system cannot accept any more requests ( monitor the free
+list and see that no blocks are available) pick a victim and kill that
+process and recover its allocated storage.  There are a lot of issues
+here to discuss - which to kill, is there enough storage, who do you
+give  the freed storage, etc.
+ 
+  
+
+14) To what physical address will the following logical address be
+mapped?                 
+     virtual address:  00011        0011
+                       page#        offset
+page map table
+valid bit     memory address
+v   		001110
+v   		011100
+v   		011111
+v   		100000
+What is the size of the pages assuming the machine is byte addressable?
+
+DISCUSSION:
+mapped to 4th entry (3 is 4th entry) - 100000 0011
+Size of pages:  2^4 power or 16 bits
+
+
+
+Problem on
+1) page replacement FIFO, LRU, optimal
+
+For reference string 20203456432200 and three frames, how many page
+faults will each of the above algorithms cause.  Show replacement.
+
+
+1) RAID disks are designed to further goals of  ___________ and/ or ____________
+
+ans:  Efficiency , reliability
+
+2) Two disadvantages of linked noncontiguous file storage _______ and _____
+ans:  multiple disk accesses for data that does not reside in the first block/cluster
+      reliability issue: even with a doubly linked chain of blocks, if one
+           link is lost, there are issues in reconstructing file
+      storage cost of links between blocks
+
+
+3.A UNIX file system allows a user to delete a file.  If the OS reclaims its 
+disk space, although links (dangling references) to that file still
+exist,  users may read and write different files that were later
+allocated the reclaimed storage area.
+This problem can be effectively dealt with by
+a) Implementing the sharing by hard links.
+b) Reference counts for the users that have hard links to the file
+c) Running a disk defragmentation program.
+d) Using a hash function
+
+ANS: b) reference counts can be used to prevent deallocating storage space
+as long as pointers to that storage area exist
+
+
+4. A file open operation is used to
+a) return a pointer to the file table, so that subsequent access to the file
+can retrieve all relevant information, without repeated searches
+b) create a file table
+c) allocate storage for the file on the disk
+d) store the file in the proper directory
+e) create an index of blocks allocated to the file
+
+ANS: a)
+
+
+5. A UNIX or NT socket creation is used to
+a) return a pointer to the socket table, so that subsequent access to the
+socket can retrieve all relevant information (binding is necessary for
+socket use)
+b) create a socket table
+c) create a file table
+d) store a file in the proper directory
+
+ANS: (a)
+
+
+
+6. Discuss some of the issues of failure detection and recovery in
+distributed systems
+DISCUSSION
+
+Transmission errors - typically dealt with by adding redundant bits to
+message unit; if bits are used to detect errors only, then message unit
+is discarded.  Sender times out and resends message unit (unless a
+negative acknowledgment is received earlier). As we discussed, a CRC
+is specifically designed to handle burst errors that are common in copper
+wires and wireless communication
+
+Host or line goes down - initially sender cannot distinguish between this
+scenario and transmission error.  After repeated attempted to contact
+receiver, sender broadcasts failure to other nodes.  Based on response
+from other nodes, sender can distinguish between host or line failure.
+In case of line failure, nodes cooperate in reconfiguration of network
+In case of node failure, when the node comes up there is considerable work
+to recover previous state.
+
+Duplicate packets, services, etc.
+Because networks rely on time-outs to identify lost packets or tokens or downed
+services, there is a possibility that these will be duplicated. Message units
+must be carefully identified to detect duplicates. Frequently types
+of voting schemes are used to identify and eliminate duplicate services.
+
+7. A UNIX i-node has 13 direct pointers, 1 indirect pointer, 1 double indirect
+pointer and 1 triple indirect pointer.  Assume that each 32 bit pointer
+identifies one block of 8KB.  How large a file can the i-node handle?
+
+ans:  13 (1 block) + 1 (2k pointers) (1 block) + 1 (2k)(2k) (1 block) +
+                          (2k)(2k)(2k) (1 block) =
+    13 (8kB) + 2k (8kB) + 4M (8kB) + 8G (8kB) =
+      104KB + 16MB + 32GB + 64 TB = 64032016024000Bytes
+              It is actually greater than that since kB = 1024 Bytes,
+but I have written it like that to indicate the size of the file that each
+portion can handle.
+
+8) Give three steps in the handshake between controller and host.
+Possible answer:
+a) Controller sets busy bit 
+b) host sets command bit
+c) data in or data out registers filled depending upon command
+d) status bit set by controller after i/o completion
+
+
+9) A robotic jukebox is a
+a) controller
+b) fast storage device
+c) very large storage device
+d) storage device for virtual memory
+
+ans: (c)
+
+10) Firewire is similar to USB is that it
+a) is defined for a serial connector
+b) is defined for a parallel connector
+c) is defined for slow devices
+d) is limited to Apple systems
+
+11) Interrupt Handling for devices required extra hardware of ___________
+
+

@@ -1,0 +1,50 @@
+Programming With Named Pipes
+------------------------------
+A named pipe can be created either by using the
+mknod() system call, or the mkfifo() library function.
+
+In Linux, according to the mknod()
+(2) man page,
+"Under Linux, this call cannot be used to create directories. One should make
+directories with mkdir(2), and FIFOs with mkfifo(3)."
+Therefore, we will stick to using mkfifo() for creating FIFOs. The other advantage of
+mkfifo() over mknod() is that it is easier to use and does not require superuser privileges:
+
+#include <sys/types.h>
+#include <sys/stat.h>
+int mkfifo(const char *pathname, mode_t mode);
+The call mkfifo("MY_PIPE", 0666) creates a FIFO named MY_PIPE with permission 0666
+& ~umask. The convention is to use UPPERCASE letters for the names of FIFOs. This way
+they are easily identified in directory listings.
+
+A public FIFO is one that is
+known to all clients.
+
+A private FIFO, in contrast, is given a name that is not known
+to anyone except the process that creates it and the processes to which it chooses to divulge it.
+
+In this first example, the server creates a public FIFO. The server and client programs know the
+name of the public FIFO because they will share a common header file that hard-codes the
+pathname to the file in the file system.
+-------------------------------
+
+The server creates the FIFO and opens it for both reading and writing, even if it only needs to
+read incoming messages on the pipe
+
+This is because the FIFO needs to have at least one process
+that has it open for writing, otherwise the server will immediately receive an end-of-file on the
+FIFO and close its reading loop. By opening it up for writing also, the server will simply block
+on the read() to it, waiting for a client to send it data.
+
+Since the server never writes to this
+pipe, it does not matter whether writes are non-blocking or not, but by opening it with the
+O_NDELAY flag, since POSIX does not specify how a system is supposed to handle opening a file
+in blocking mode for both reading and writing, we avoid possibly undefined behavior.
+
+The server is run as a background process and is the process that must be started first, so that it can
+create the FIFO. If a client tries to write to a FIFO that does not exist, it will fail.
+
+
+It uses the library function
+memset(), found in <string.h>, to zero the buffer where the user's text will be stored, and it
+declares the buffer to be PIPE_BUF chars, so that the write will be atomic. (If the locale uses
